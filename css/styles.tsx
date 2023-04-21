@@ -61,6 +61,9 @@ export const styles = StyleSheet.create({
     color: 'pink',
     fontStyle: 'italic',
   },
+cardTextPadding: {
+  paddingBottom: 10,
+},
   imageShadow: {
     shadowColor: '#ff0000',
     shadowOffset: {
@@ -83,6 +86,19 @@ export const styles = StyleSheet.create({
   width: CARD_WIDTH,
   borderRadius: 10,
   opacity: 0.7,
-}
+},
+titleText: {
+  textAlign: 'center',
+  marginTop: 30,
+  fontSize: 40,
+  fontStyle:'italic',
+  fontWeight: 'bold',
+  color: 'gold' 
+},
+flatListMargin: {
+  marginTop:50,
+  backgroundColor: '#ffe6e6'
+},
+
 
 })

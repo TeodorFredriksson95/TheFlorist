@@ -46,7 +46,7 @@ export const Card = ({ img, family, common_name, scientific_name, synonyms, isFl
         <View  style={styles.cardTextBackContainer}>
           <Text style={styles.cardTextBack}>{family}</Text>
           <Text style={styles.cardTextBack}>{scientific_name}</Text>
-          <Text style={styles.cardTextBack}>{synonyms}</Text>
+          <Text style={[styles.cardTextBack, styles.cardTextPadding]}>{synonyms}</Text>
         </View>
       </Animated.View>
     </View>
