@@ -18,12 +18,15 @@ export const GetFlowers = async (pageNr: number) => {
 
       const flowers = result.data.map((data: PlantData) => {
         return {
+          id: data.id,
           img: data.image_url,
           family: data.family,
           common_name: data.common_name,
           scientific_name: data.scientific_name,
+          author: data.author,
+          bibliography: data.bibliography,
+          year: data.year,
           synonyms: data.synonyms[0],
-          id: data.id
         };
       });
 

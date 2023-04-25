@@ -1,5 +1,5 @@
 
-import { View, Text, TouchableOpacity, FlatList as VirtualizedList, StyleSheet, Animated, Image, ActivityIndicator, Button, Pressable } from 'react-native'
+import {StyleSheet} from 'react-native'
 
 const CARD_HEIGHT = 150;
 const CARD_WIDTH = 100;
@@ -99,20 +99,6 @@ flatListMargin: {
   marginTop:50,
   backgroundColor: '#ffe6e6'
 },
-modalBackground: {
-  position: "absolute",
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
-  backgroundColor: "rgba(255, 255, 255, 0.9)",
-  justifyContent: "center",
-  alignItems: "center",
-},
-modalContent: {
-  backgroundColor: "white",
-  padding: 20,
-  borderRadius: 10,
-},
+
 
 })

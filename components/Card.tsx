@@ -1,9 +1,9 @@
  import React, { useState, useEffect } from 'react'
 import { View, Text, Animated, Image } from 'react-native'
-import { styles } from '../css/styles'
+import { styles } from '../css/cardStyles'
 
 
-export const Card = ({ img, family, common_name, scientific_name, synonyms, isFlipped }: any) => {
+export const Card = ({ img, family, common_name, scientific_name, synonyms, isFlipped, author }: any) => {
   const [rotation] = useState(new Animated.Value(isFlipped ? 180 : 0))
 
   useEffect(() => {

@@ -2,7 +2,7 @@
 import { FlatList } from 'react-native';
 import { Text, TouchableOpacity, FlatList as VirtualizedList} from 'react-native'
 import { Card } from './Card'
-import { styles } from '../css/styles'
+import { styles } from '../css/cardStyles'
 import { FlowerProps, FetchFlowers } from '../types/Flowers'
 import { GetFlowers } from '../api/getFlowers';
 import { FlowerModal } from './FlowerModal';
@@ -70,9 +70,6 @@ const LandingPage = () => {
     
   return (
     <>
-    <Text style={styles.titleText}>
-      CARROS APP
-    </Text>
       <FlatList
          initialNumToRender={15}
          windowSize={10}
