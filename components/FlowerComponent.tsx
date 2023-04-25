@@ -1,12 +1,13 @@
  import React, { useState, useEffect, useRef } from 'react'
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Text, TouchableOpacity, FlatList as VirtualizedList} from 'react-native'
 import { Card } from './Card'
 import { styles } from '../css/cardStyles'
 import { FlowerProps, FetchFlowers } from '../types/Flowers'
 import { GetFlowers } from '../api/getFlowers';
 import { FlowerModal } from './FlowerModal';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
+import NavigationBar from './NavigationComponent';
 
 const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -70,6 +71,11 @@ const LandingPage = () => {
     
   return (
     <>
+  <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      <View>
+        <NavigationBar/>
+      </View>
       <FlatList
          initialNumToRender={15}
          windowSize={10}
@@ -81,10 +87,12 @@ const LandingPage = () => {
          style={styles.flatListMargin}
          onEndReachedThreshold={0.3}
          onEndReached={() => {
-            setPageNr(pageNr +1)
-            GetFlowers(pageNr);
+           setPageNr(pageNr +1)
+           GetFlowers(pageNr);
           }}
           />
+          </View>
+          </SafeAreaView>
 </> 
  )
   

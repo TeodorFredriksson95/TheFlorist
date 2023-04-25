@@ -96,7 +96,6 @@ titleText: {
   color: 'gold' 
 },
 flatListMargin: {
-  marginTop:50,
   backgroundColor: '#ffe6e6'
 },
 
