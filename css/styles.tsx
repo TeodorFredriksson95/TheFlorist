@@ -99,6 +99,20 @@ flatListMargin: {
   marginTop:50,
   backgroundColor: '#ffe6e6'
 },
-
+modalBackground: {
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: "rgba(255, 255, 255, 0.9)",
+  justifyContent: "center",
+  alignItems: "center",
+},
+modalContent: {
+  backgroundColor: "white",
+  padding: 20,
+  borderRadius: 10,
+},
 
 })
