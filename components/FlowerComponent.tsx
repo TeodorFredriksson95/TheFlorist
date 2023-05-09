@@ -48,10 +48,10 @@ const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
 
 
 const renderItem = ({ item, index }: any) => {
-  return <Item key={item.key} item={item} />
+  return <Item key={index.toString()} item={item} />
 }
 
-const keyExtractor = (item:any) => item.id
+const keyExtractor = (item: any, index: number) => index.toString()
 
 const LandingPage = () => {
     const [data, setData] = useState<FetchFlowers[]>([]);
@@ -73,9 +73,6 @@ const LandingPage = () => {
     <>
   <SafeAreaView style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
-      <View>
-        <NavigationBar/>
-      </View>
       <FlatList
          initialNumToRender={15}
          windowSize={10}

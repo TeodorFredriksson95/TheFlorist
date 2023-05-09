@@ -1,16 +1,42 @@
-import { Text, TouchableOpacity, FlatList as VirtualizedList, View} from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { useState } from 'react';
+import { View, useWindowDimensions } from 'react-native';
+import { TabView, SceneMap, TabBar  } from 'react-native-tab-view';
 import LandingPage from './FlowerComponent';
-import FavoritesPage from './FavoritesComponent';
+import FavoritePage from './FavoritesComponent';
+import { color } from 'react-native-reanimated';
 
-const Stack = createStackNavigator();
+const renderScene = SceneMap({
+  first: LandingPage,
+  second: FavoritePage,
+  third: FavoritePage,
+});
 
-const NavigationBar = () => {
+const renderTabBar = (props: any) => (
+  <TabBar
+    {...props}
+    style={{ backgroundColor: '#ff0066' }}
+    indicatorStyle={{ backgroundColor: '#ffcc00' }}
+  />
+);
+
+const TabViewExample = () => {
+  const layout = useWindowDimensions();
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'first', title: 'Flowers' },
+    { key: 'second', title: 'Favorites' },
+    { key: 'third', title: 'Bouquetes' },
+  ]);
+
   return (
-    <View style={{ height: 50, backgroundColor: '#ccc', alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Navigation Bar</Text>
-    </View>
-  )
-}
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+      renderTabBar={renderTabBar}
+    />
+  );
+};
 
-export default NavigationBar
+export default TabViewExample;

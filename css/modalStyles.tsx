@@ -60,5 +60,12 @@ export const styles = StyleSheet.create({
   },
   textStyle: {
     fontStyle: 'italic',
+  },
+  iconStyle: {
+    color: "#ffcc00"
+  },
+  addToFavoritesItems: {
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 });

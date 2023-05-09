@@ -7,10 +7,9 @@ import { FlowerProps, FetchFlowers } from '../types/Flowers'
 import { GetFlowers } from '../api/getFlowers';
 import { FlowerModal } from './FlowerModal';
 
-const FavoritePage = () => {
-    return (
+const FavoritePage = () => (
         <Text>favorite page</Text>
-    )
-}
+    
+)
 
 export default FavoritePage

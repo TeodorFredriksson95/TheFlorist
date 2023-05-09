@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import { FetchFlowers } from '../types/Flowers';
 import { styles } from '../css/modalStyles';
+import Icon from 'react-native-vector-icons/Entypo';
 
 const FlowerModal: React.FC<{ selectedFlower: FetchFlowers | null; onClose: () => void }> = ({
   selectedFlower,
@@ -28,6 +29,10 @@ const FlowerModal: React.FC<{ selectedFlower: FetchFlowers | null; onClose: () =
           <Text style={styles.subtitle}>Author: <Text style={styles.textStyle}>{selectedFlower.author}</Text></Text>
           <Text style={styles.subtitle}>Bibliography: <Text style={styles.textStyle}>{selectedFlower.bibliography}</Text></Text>
           <Text style={styles.subtitle}>Year: <Text style={styles.textStyle}>{selectedFlower.year}</Text></Text>
+            <View style={styles.addToFavoritesItems}>
+              <Text >Add to favorites </Text>
+              <Icon name="circle-with-plus" style={styles.iconStyle} size={30}/>
+            </View>
         </View>
       </TouchableWithoutFeedback>
       </View>

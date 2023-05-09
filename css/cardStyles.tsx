@@ -6,6 +6,7 @@ const CARD_WIDTH = 100;
 
 export const styles = StyleSheet.create({
   cardList: {
+      marginTop: 20,
    alignItems: 'center',
    paddingBottom: 40,
   },
