@@ -24,9 +24,7 @@
     const response = await fetch('https://trefle.io/api/v1/plants?token=d0f6EsLJkdG_57a5-6m_BvO0E4jX401WIZUV9ARHQ9k',)
     const json = await response.json();
 
-    // const flowers = response.data.map((data) => { return {img: data.image_url, family: data.family}});
     console.log(json.data.map((data) => {return {img: data.image_url}}))
-    // json.data.map((data) => { console.log({img: data.image_url, fam: data.family})})
 
     return {img: json.img_url, family: json.family};
     } catch (error){
