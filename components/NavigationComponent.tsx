@@ -5,11 +5,7 @@ import LandingPage from './FlowerComponent';
 import FavoritePage from './FavoritesComponent';
 import { color } from 'react-native-reanimated';
 
-const renderScene = SceneMap({
-  first: LandingPage,
-  second: FavoritePage,
-  third: FavoritePage,
-});
+
 
 const renderTabBar = (props: any) => (
   <TabBar
@@ -27,7 +23,19 @@ const TabViewExample = () => {
     { key: 'second', title: 'Favorites' },
     { key: 'third', title: 'Bouquetes' },
   ]);
-
+  
+const renderScene = ({ route }: any) => {
+  switch (route.key) {
+    case 'first':
+      return <LandingPage />;
+    case 'second':
+      return <FavoritePage isActive={index === 1} />;
+    case 'third':
+      return <FavoritePage isActive={index === 2} />;
+    default:
+      return null;
+  }
+};
   return (
     <TabView
       navigationState={{ index, routes }}
@@ -35,6 +43,7 @@ const TabViewExample = () => {
       onIndexChange={setIndex}
       initialLayout={{ width: layout.width }}
       renderTabBar={renderTabBar}
+      lazy
     />
   );
 };
