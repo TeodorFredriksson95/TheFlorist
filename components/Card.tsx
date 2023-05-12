@@ -1,6 +1,6 @@
- import React, { useState, useEffect } from 'react'
-import { View, Text, Animated, Image } from 'react-native'
-import { styles } from '../css/cardStyles'
+import React, { useState, useEffect } from 'react';
+import { View, Text, Animated, Image } from 'react-native';
+import { styles } from '../css/cardStyles';
 
 
 export const Card = ({ img, family, common_name, scientific_name, synonyms, isFlipped, author }: any) => {

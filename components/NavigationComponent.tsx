@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { TabView, SceneMap, TabBar  } from 'react-native-tab-view';
-import LandingPage from './FlowerComponent';
+import LandingPage from './LandingPageComponent';
 import FavoritePage from './FavoritesComponent';
 import { color } from 'react-native-reanimated';
 

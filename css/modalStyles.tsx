@@ -1,6 +1,8 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native'
 
 const { width, height } = Dimensions.get('window');
+const CARD_HEIGHT = 150;
+const CARD_WIDTH = 100;
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,6 +10,24 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+    cardListModal: {
+    marginTop: 20,
+   alignItems: 'flex-start',
+   paddingBottom: 40,
+  },
+  itemContainer: {
+  flex: 1,
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+},
+  modalCard: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backfaceVisibility: 'hidden',
+    borderRadius: 10,
   },
   modal: {
     width: width - 25,
@@ -53,6 +73,7 @@ export const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
   },
+
   imageBorder: {
     borderWidth: 2,
     borderColor: '#ffe6e6',
@@ -67,5 +88,19 @@ export const styles = StyleSheet.create({
   addToFavoritesItems: {
     flexDirection: 'row',
     alignItems: 'center',
-  }
+  },
+  bouquetMargin: {
+  margin: 5,
+  },
+  imageOverlay: {
+  position: 'absolute',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
+imageText: {
+  color: 'white',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
 });

@@ -1,4 +1,4 @@
-import FlowerComponent from "../components/FlowerComponent";
+import FlowerComponent from "../components/LandingPageComponent";
 
 export default function ViewFlowers(){
     return (

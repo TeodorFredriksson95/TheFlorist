@@ -1,31 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import { FetchFlowers } from '../types/Flowers';
 import { styles } from '../css/modalStyles';
 import Icon from 'react-native-vector-icons/Entypo';
 import { db, app } from '../firebase';
 import { getFirestore, collection, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
+import BouquetsModal from './BouquetsModal';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const FlowerModal: React.FC<{ selectedFlower: FetchFlowers | null; onClose: () => void }> = ({
-  selectedFlower,
-  onClose,
-}) => {
-const handleAddToFavorites = async () => {
-  if (!selectedFlower) return;
+const FlowerModal: React.FC<{
+  selectedFlower: FetchFlowers | null;
+  onClose: () => void;
+  isFavorite: boolean;
+  onAddToFavorite?: () => void;
+  onAddToBouquet?: (bouquetName: string) => void;
+  onAddToNewBouquet?: () => void;
+  }> = ({ selectedFlower, onClose, isFavorite, onAddToFavorite, onAddToBouquet, onAddToNewBouquet }) => {
 
-  const dbInstance = getFirestore(app);
-  const favoritesRef = collection(dbInstance, 'favorites');
-  const flowerFavoritesDocRef = doc(favoritesRef, 'flowerFavorites');
-  const flowerFavoritesDoc = await getDoc(flowerFavoritesDocRef);
+    const [bouquetName, setBouquetName] = useState('');
+    const [isBouquetsModalVisible, setIsBouquetsModalVisible] = useState(false);
 
-  if (!flowerFavoritesDoc.exists()) {
-    await setDoc(flowerFavoritesDocRef, {});
-  }
+    const handleOpenBouquetsModal = () => {
+      setIsBouquetsModalVisible(true);
+    };
 
-  updateDoc(flowerFavoritesDocRef, {
-    [selectedFlower.id]: selectedFlower,
-  });
-};
+      const handleAddToNewBouquet = () => {
+    if (onAddToNewBouquet) {
+      onAddToNewBouquet(); 
+    }
+  };
+
+    const handleAddToBouquet = () => {
+      if (bouquetName && onAddToBouquet) {
+        onAddToBouquet(bouquetName)
+        setBouquetName('')
+      }
+    }
 
   if (!selectedFlower) {
     return null;
@@ -48,10 +58,38 @@ const handleAddToFavorites = async () => {
             <Text style={styles.subtitle}>Author: <Text style={styles.textStyle}>{selectedFlower.author}</Text></Text>
             <Text style={styles.subtitle}>Bibliography: <Text style={styles.textStyle}>{selectedFlower.bibliography}</Text></Text>
             <Text style={styles.subtitle}>Year: <Text style={styles.textStyle}>{selectedFlower.year}</Text></Text>
-            <TouchableOpacity style={styles.addToFavoritesItems} onPress={handleAddToFavorites}>
-              <Text >Add to favorites </Text>
-              <Icon name="circle-with-plus" style={styles.iconStyle} size={30}/>
-            </TouchableOpacity>
+            {isFavorite && onAddToFavorite && (
+              <TouchableOpacity style={styles.addToFavoritesItems} onPress={onAddToFavorite}>
+                <Text>Add to favorites</Text>
+                <Icon name="circle-with-plus" style={styles.iconStyle} size={30} />
+              </TouchableOpacity>
+            )}
+            {!isFavorite && onAddToBouquet && (
+      <>
+      <TouchableOpacity style={styles.addToFavoritesItems} onPress={handleOpenBouquetsModal}>
+          <Text>Add to bouquets</Text>
+          <Icon name="circle-with-plus" style={styles.iconStyle} size={30} />
+        </TouchableOpacity>
+       <BouquetsModal
+          visible={isBouquetsModalVisible}
+          onClose={() => setIsBouquetsModalVisible(false)}
+          onSelectBouquet={async (selectedBouquet) => {
+            // Here you can handle the event when the user selects a bouquet.
+            // For example, you can update the selected flower's document in Firestore
+            // to include the selected bouquet's id in a "bouquets" array field.
+            console.log('Selected bouquet:', selectedBouquet);
+            setIsBouquetsModalVisible(false);
+            
+            // Update the selected bouquet's images array to include the selected flower's image
+            const bouquet = { ...selectedBouquet, images: [...selectedBouquet.images, selectedFlower.img] };
+            const db = getFirestore();
+            await setDoc(doc(db, 'Bouquets', selectedBouquet.id), bouquet);
+          }}
+          selectedFlower={selectedFlower}
+        />
+
+      </>
+    )}
           </View>
         </TouchableWithoutFeedback>
       </View>

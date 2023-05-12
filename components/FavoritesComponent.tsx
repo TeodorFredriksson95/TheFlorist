@@ -1,5 +1,5 @@
  import React, { useState, useEffect, useRef } from 'react'
-import { Text, TouchableOpacity, FlatList as VirtualizedList} from 'react-native'
+import { Alert, Text, TouchableOpacity, FlatList as VirtualizedList} from 'react-native'
 import { GetFavoriteFlowers } from '../api/getFavoriteFlowers';
 import { FlowerProps, FetchFlowers } from '../types/Flowers'
 import { styles } from '../css/cardStyles'
@@ -8,6 +8,8 @@ import { FlowerModal } from './FlowerModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList, View } from 'react-native';
 import { withActiveState } from './withActiveState';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { app } from '../firebase'
 
 const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -29,6 +31,10 @@ const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
     setSelectedFlower(null);
   };
 
+  const handleAddToBouquets = async (bouquetName: string) => {
+    if (!selectedFlower) return;
+  }
+
   return (
     <>
       <TouchableOpacity style={styles.cardWrapper} onPress={handlePress}>
@@ -41,7 +47,12 @@ const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
           isFlipped={isFlipped}
         />
       </TouchableOpacity>
-      <FlowerModal selectedFlower={selectedFlower} onClose={handleModalClose} />
+      <FlowerModal
+       selectedFlower={selectedFlower} 
+       onClose={handleModalClose} 
+       isFavorite={false}
+       onAddToBouquet={handleAddToBouquets}
+       />
     </>
   );
 }, (prevProps, nextProps) => prevProps.item === nextProps.item);

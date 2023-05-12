@@ -1,15 +1,17 @@
- import React, { useState, useEffect, useRef } from 'react'
-import { FlatList, View } from 'react-native';
-import { Text, TouchableOpacity, FlatList as VirtualizedList} from 'react-native'
-import { Card } from './Card'
-import { styles } from '../css/cardStyles'
-import { FlowerProps, FetchFlowers } from '../types/Flowers'
-import { GetFlowers } from '../api/getFlowers';
-import { FlowerModal } from './FlowerModal';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import NavigationBar from './NavigationComponent';
+import React, { useState, useEffect, useRef } from 'react';
+import { FlatList, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 
-const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
+import {Card} from './Card';
+import {FlowerModal} from './FlowerModal';
+
+import { styles } from '../css/cardStyles';
+
+import { FlowerProps, FetchFlowers } from '../types/Flowers';
+import { GetFlowers } from '../api/getFlowers';
+import { db, app } from '../firebase';
+import { getFirestore, collection, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
+
+const FlowerItem: React.FC<FlowerProps> = React.memo(({ item }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedFlower, setSelectedFlower] = useState<FetchFlowers | null>(null);
   const lastTapRef = useRef(0);
@@ -29,6 +31,23 @@ const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
     setSelectedFlower(null);
   };
 
+   const handleAddToFavorites = async () => {
+  if (!selectedFlower) return;
+
+  const dbInstance = getFirestore(app);
+  const favoritesRef = collection(dbInstance, 'favorites');
+  const flowerFavoritesDocRef = doc(favoritesRef, 'flowerFavorites');
+  const flowerFavoritesDoc = await getDoc(flowerFavoritesDocRef);
+
+  if (!flowerFavoritesDoc.exists()) {
+    await setDoc(flowerFavoritesDocRef, {});
+  }
+
+  updateDoc(flowerFavoritesDocRef, {
+    [selectedFlower.id]: selectedFlower,
+  });
+};
+
   return (
     <>
       <TouchableOpacity style={styles.cardWrapper} onPress={handlePress}>
@@ -41,14 +60,19 @@ const Item: React.FC<FlowerProps> = React.memo(({ item }) => {
           isFlipped={isFlipped}
         />
       </TouchableOpacity>
-      <FlowerModal selectedFlower={selectedFlower} onClose={handleModalClose} />
+      <FlowerModal
+       selectedFlower={selectedFlower} 
+       onClose={handleModalClose} 
+       isFavorite={true}
+       onAddToFavorite={handleAddToFavorites}
+       />
     </>
   );
 }, (prevProps, nextProps) => prevProps.item === nextProps.item);
 
 
 const renderItem = ({ item, index }: any) => {
-  return <Item key={index.toString()} item={item} />
+  return <FlowerItem key={index.toString()} item={item} />
 }
 
 const keyExtractor = (item: any, index: number) => index.toString()

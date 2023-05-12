@@ -1,14 +1,25 @@
 
-import {StyleSheet} from 'react-native'
+import {Dimensions, StyleSheet} from 'react-native'
 
 const CARD_HEIGHT = 150;
 const CARD_WIDTH = 100;
 
+const TOTAL_WIDTH = Dimensions.get('window').width;
+const CARD_MARGIN = 5; // Considering that you have a margin of 5 for each card from 'bouquetMargin' style.
+const NUMBER_OF_CARDS_IN_ROW = 3;
+const TOTAL_CARD_WIDTH = (CARD_WIDTH + 2 * CARD_MARGIN) * NUMBER_OF_CARDS_IN_ROW;
+
+const remainingWidth = TOTAL_WIDTH - TOTAL_CARD_WIDTH;
+const padding = remainingWidth / 2;
+
 export const styles = StyleSheet.create({
+
   cardList: {
-      marginTop: 20,
-   alignItems: 'center',
+    marginTop: 20,
+   alignItems: 'flex-start',
    paddingBottom: 40,
+   justifyContent: 'flex-start',
+   paddingHorizontal: padding 
   },
   cardWrapper: {
     paddingHorizontal: 5,
