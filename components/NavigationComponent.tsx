@@ -4,7 +4,7 @@ import { TabView, SceneMap, TabBar  } from 'react-native-tab-view';
 import LandingPage from './LandingPageComponent';
 import FavoritePage from './FavoritesComponent';
 import { color } from 'react-native-reanimated';
-
+import CarouselPage from './CarouselPage';
 
 
 const renderTabBar = (props: any) => (
@@ -31,7 +31,7 @@ const renderScene = ({ route }: any) => {
     case 'second':
       return <FavoritePage isActive={index === 1} />;
     case 'third':
-      return <FavoritePage isActive={index === 2} />;
+      return <CarouselPage isActive={index === 2} />;
     default:
       return null;
   }

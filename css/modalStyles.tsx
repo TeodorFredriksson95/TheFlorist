@@ -21,6 +21,52 @@ export const styles = StyleSheet.create({
   justifyContent: 'flex-end',
   alignItems: 'center',
 },
+carouselImage: {
+    width: '100%',
+    height: '100%',
+  },  
+  thumbnailContainer: {
+    margin: 2,  // Adjust this value as needed
+  },
+  activeThumbnail: {
+  borderColor: 'gold', // or whatever color you want for the border
+  borderWidth: 2, // adjust as needed
+},
+thumbnailList: {
+    position: 'absolute',
+    bottom: 0,
+  },
+modalContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+},
+closeButtonBouqetModal: {
+      position: 'absolute',
+    top: 10,
+    right: 30,
+    zIndex: 1,
+},
+closeButtonBouqetModalText: {
+      fontSize: 25,
+    fontWeight: 'bold',
+    color: 'white'
+},
+thumbnail: {
+    borderRadius: 5,
+    borderWidth: 2,
+    // borderColor: 'gold',
+    width: 60, 
+    height: 60,
+  },
+carouselItemContainer: {
+  width: '100%',
+  height: '80%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: 50,
+},
   modalCard: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
