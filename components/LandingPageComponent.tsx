@@ -3,6 +3,7 @@ import { FlatList, View, Text, TouchableOpacity, SafeAreaView } from 'react-nati
 
 import {Card} from './Card';
 import {FlowerModal} from './FlowerModal';
+import SearchBar from './SearchBar';
 
 import { styles } from '../css/cardStyles';
 
@@ -82,20 +83,38 @@ const LandingPage = () => {
     const [isLoading, setLoading] = useState(true);
     const [pageNr, setPageNr] = useState(1)
   const [selectedFlower, setSelectedFlower] = useState<FetchFlowers | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSearch = (query: any) => {
+    setSearchQuery(query);
+    // reset data and page number
+    setData([]);
+    setPageNr(1);
+    setError('');
+  };
+
 
   useEffect(() => {
-  GetFlowers(pageNr)
-    .then((flowers) => {
-      setData(prevData => [...prevData, ...flowers]);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}, [pageNr]);
+    // modify your GetFlowers function to accept a second parameter for search query
+    GetFlowers(pageNr, searchQuery)
+      .then((flowers) => {
+        if (flowers === undefined) {
+          setError(`Could not search for "${searchQuery}"`);
+        } else {
+          setData((prevData) => [...prevData, ...flowers]);
+        }
+      })
+      .catch((error) => {
+        setError(`Could not search for "${searchQuery}"`);
+        console.error(error);
+      })
+  }, [pageNr, searchQuery]);
     
   return (
     <>
   <SafeAreaView style={{ flex: 1 }}>
+      <SearchBar onSearch={handleSearch} />
     <View style={{ flex: 1 }}>
       <FlatList
          initialNumToRender={15}
