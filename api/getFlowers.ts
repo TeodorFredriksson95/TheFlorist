@@ -105,8 +105,9 @@ export const GetFlowers = async (pageNr: number, searchQuery: string = '', filte
   throw new Error('No flowers found.');
 }
 
-    return flowers;
-  } catch (error) {
+return flowers;
+
+} catch (error) {
     console.error(error);
   }
 };

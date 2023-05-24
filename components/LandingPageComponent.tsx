@@ -80,52 +80,59 @@ const keyExtractor = (item: any, index: number) => index.toString()
 
 const LandingPage = () => {
   const [error, setError] = useState('');
-  const [pageNr, setPageNr] = useState(1)
-  const [isLoading, setLoading] = useState(true);
+  const [pageNr, setPageNr] = useState(1);
+  const [isLoading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [data, setData] = useState<FetchFlowers[]>([]);
   const [selectedFlower, setSelectedFlower] = useState<FetchFlowers | null>(null);
   const [filters, setFilters] = useState<Filters>({ red: false, green: false, blue: false, yellow: false, purple: false, white: false, edible: false });
-  
+  const [resetData, setResetData] = useState(false);
 
-const handleFiltersChange = (newFilters: typeof filters) => {
-  setFilters(newFilters);
-  setError('');
-};
-  const handleSearch = (query: any) => {
-    setSearchQuery(query);
-    // reset data and page number
-    setData([]);
+  const handleFiltersChange = (newFilters: typeof filters) => {
+    setFilters(newFilters);
     setPageNr(1);
     setError('');
+    setResetData(true);
   };
 
+  const handleSearch = (query: any) => {
+    setSearchQuery(query);
+    setPageNr(1);
+    setError('');
+    setResetData(true);
+  };
 
   useEffect(() => {
-    setLoading(true); // Added setLoading(true) here to indicate that a new fetch is in progress.
+    if (isLoading) return; // Avoid fetching if already loading
+
+    setLoading(true);
     
     GetFlowers(pageNr, searchQuery, filters)
       .then((flowers) => {
         if (!flowers || flowers.length === 0) {
-        const selectedFilters = Object.entries(filters)
-          .filter(([key, value]) => value)
-          .map(([key]) => key)
-          .join(', ');
-        setData([]);
-        setError(`Could not find flowers matching "${searchQuery}" with filters: ${selectedFilters}`);
-      } else {
-        setData((prevData) => [...prevData, ...flowers]);
-      }
+          const selectedFilters = Object.entries(filters)
+            .filter(([key, value]) => value)
+            .map(([key]) => key)
+            .join(', ');
+          setData([]);
+          setError(`Could not find flowers matching "${searchQuery}" with filters: ${selectedFilters}`);
+        } else {
+          if (resetData) {
+            setData(flowers);
+          } else {
+            setData((prevData) => [...prevData, ...flowers]);
+          }
+        }
+        setResetData(false);
       })
       .catch((error) => {
-      setError(error.message);
+        setError(error.message);
         console.error(error);
       })
       .finally(() => {
-        setLoading(false); // Added setLoading(false) here to indicate that the fetch is complete.
+        setLoading(false);
       });
-  }, [pageNr, searchQuery, filters]);
-    
+  }, [pageNr, searchQuery, filters, resetData]);
 
 
   return (
@@ -145,9 +152,13 @@ const handleFiltersChange = (newFilters: typeof filters) => {
         keyExtractor={keyExtractor}
         contentContainerStyle={styles.cardList}
         style={styles.flatListMargin}
-        onEndReachedThreshold={0.3}
-        onEndReached={() => setPageNr((prevPageNr) => prevPageNr + 1)}
-        />
+        onEndReachedThreshold={0.9}
+        onEndReached={() => {
+          if (!isLoading) {
+            setPageNr((prevPageNr) => prevPageNr + 1)
+          }
+        }} 
+       />
         )}
           </View>
           </SafeAreaView>
