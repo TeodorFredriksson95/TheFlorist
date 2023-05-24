@@ -4,7 +4,7 @@ import { FlatList, View, Text, TouchableOpacity, SafeAreaView } from 'react-nati
 import {Card} from './Card';
 import {FlowerModal} from './FlowerModal';
 import SearchBar from './SearchBar';
-
+import { Filters } from '../types/Filters';
 import { styles } from '../css/cardStyles';
 
 import { FlowerProps, FetchFlowers } from '../types/Flowers';
@@ -79,13 +79,19 @@ const renderItem = ({ item, index }: any) => {
 const keyExtractor = (item: any, index: number) => index.toString()
 
 const LandingPage = () => {
-    const [data, setData] = useState<FetchFlowers[]>([]);
-    const [isLoading, setLoading] = useState(true);
-    const [pageNr, setPageNr] = useState(1)
-  const [selectedFlower, setSelectedFlower] = useState<FetchFlowers | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState('');
+  const [pageNr, setPageNr] = useState(1)
+  const [isLoading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [data, setData] = useState<FetchFlowers[]>([]);
+  const [selectedFlower, setSelectedFlower] = useState<FetchFlowers | null>(null);
+  const [filters, setFilters] = useState<Filters>({ red: false, green: false, blue: false, yellow: false, purple: false, white: false, edible: false });
+  
 
+const handleFiltersChange = (newFilters: typeof filters) => {
+  setFilters(newFilters);
+  setError('');
+};
   const handleSearch = (query: any) => {
     setSearchQuery(query);
     // reset data and page number
@@ -96,41 +102,53 @@ const LandingPage = () => {
 
 
   useEffect(() => {
-    // modify your GetFlowers function to accept a second parameter for search query
-    GetFlowers(pageNr, searchQuery)
+    setLoading(true); // Added setLoading(true) here to indicate that a new fetch is in progress.
+    
+    GetFlowers(pageNr, searchQuery, filters)
       .then((flowers) => {
-        if (flowers === undefined) {
-          setError(`Could not search for "${searchQuery}"`);
-        } else {
-          setData((prevData) => [...prevData, ...flowers]);
-        }
+        if (!flowers || flowers.length === 0) {
+        const selectedFilters = Object.entries(filters)
+          .filter(([key, value]) => value)
+          .map(([key]) => key)
+          .join(', ');
+        setData([]);
+        setError(`Could not find flowers matching "${searchQuery}" with filters: ${selectedFilters}`);
+      } else {
+        setData((prevData) => [...prevData, ...flowers]);
+      }
       })
       .catch((error) => {
-        setError(`Could not search for "${searchQuery}"`);
+      setError(error.message);
         console.error(error);
       })
-  }, [pageNr, searchQuery]);
+      .finally(() => {
+        setLoading(false); // Added setLoading(false) here to indicate that the fetch is complete.
+      });
+  }, [pageNr, searchQuery, filters]);
     
+
+
   return (
     <>
   <SafeAreaView style={{ flex: 1 }}>
-      <SearchBar onSearch={handleSearch} />
-    <View style={{ flex: 1 }}>
-      <FlatList
-         initialNumToRender={15}
-         windowSize={10}
-         data={data}
-         numColumns={3}
-         renderItem={renderItem}
-         keyExtractor={keyExtractor}
-         contentContainerStyle={styles.cardList}
-         style={styles.flatListMargin}
-         onEndReachedThreshold={0.3}
-         onEndReached={() => {
-           setPageNr(pageNr +1)
-           GetFlowers(pageNr);
-          }}
-          />
+  <SearchBar onSearch={handleSearch} onFiltersChange={handleFiltersChange} />
+    <View style={{ flex: 1, backgroundColor: '#ffe6e6' }}>
+      {error ? (
+      <Text style={{ textAlign: 'center', marginTop: 50 }}>{error}</Text> ):
+        (        
+        <FlatList
+        initialNumToRender={15}
+        windowSize={10}
+        data={data}
+        numColumns={3}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        contentContainerStyle={styles.cardList}
+        style={styles.flatListMargin}
+        onEndReachedThreshold={0.3}
+        onEndReached={() => setPageNr((prevPageNr) => prevPageNr + 1)}
+        />
+        )}
           </View>
           </SafeAreaView>
 </> 
