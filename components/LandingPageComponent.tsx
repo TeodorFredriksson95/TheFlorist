@@ -87,6 +87,7 @@ const LandingPage = () => {
   const [selectedFlower, setSelectedFlower] = useState<FetchFlowers | null>(null);
   const [filters, setFilters] = useState<Filters>({ red: false, green: false, blue: false, yellow: false, purple: false, white: false, edible: false });
   const [resetData, setResetData] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const handleFiltersChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
@@ -107,33 +108,43 @@ const LandingPage = () => {
 
     setLoading(true);
     
-    GetFlowers(pageNr, searchQuery, filters)
-      .then((flowers) => {
-        if (!flowers || flowers.length === 0) {
+  GetFlowers(pageNr, searchQuery, filters)
+    .then((result) => {
+      if (!result) {
+        setError('Error fetching data');
+        setHasMore(false); // Update here
+        return;
+      }
+      
+      const { flowers, links } = result;
+
+      if (!flowers || flowers.length === 0) {
           const selectedFilters = Object.entries(filters)
             .filter(([key, value]) => value)
             .map(([key]) => key)
             .join(', ');
           setData([]);
-          setError(`Could not find flowers matching "${searchQuery}" with filters: ${selectedFilters}`);
+         setError(`Could not find flowers matching "${searchQuery}" with filters: ${selectedFilters}`);
+        setHasMore(false); // update here
+      } else {
+        if (resetData) {
+          setData(flowers);
         } else {
-          if (resetData) {
-            setData(flowers);
-          } else {
-            setData((prevData) => [...prevData, ...flowers]);
-          }
+          setData((prevData) => [...prevData, ...flowers]);
         }
-        setResetData(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [pageNr, searchQuery, filters, resetData]);
-
+        setHasMore(!!links.next); // update here
+      }
+      setResetData(false);
+    })
+    .catch((error) => {
+      setError(error.message);
+      console.error(error);
+      setHasMore(false); // update here
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, [pageNr, searchQuery, filters, resetData]);
 
   return (
     <>
@@ -154,7 +165,7 @@ const LandingPage = () => {
         style={styles.flatListMargin}
         onEndReachedThreshold={0.9}
         onEndReached={() => {
-          if (!isLoading) {
+          if (!isLoading && hasMore) {
             setPageNr((prevPageNr) => prevPageNr + 1)
           }
         }} 
