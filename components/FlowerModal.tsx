@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
-import { FetchFlowers } from '../types/Flowers';
+import { FetchFlowers, SpecificFlowerData } from '../types/Flowers';
 import { styles } from '../css/modalStyles';
 import Icon from 'react-native-vector-icons/Entypo';
 import { db, app } from '../firebase';
 import { getFirestore, collection, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 import BouquetsModal from './BouquetsModal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { MainSpecies, CategoryImages } from '../types/Flowers';
 
 const FlowerModal: React.FC<{
-  selectedFlower: FetchFlowers | null;
+  selectedFlower: SpecificFlowerData | null;
   onClose: () => void;
   isFavorite: boolean;
   onAddToFavorite?: () => void;
   onAddToBouquet?: (bouquetName: string) => void;
   onAddToNewBouquet?: () => void;
-  }> = ({ selectedFlower, onClose, isFavorite, onAddToFavorite, onAddToBouquet, onAddToNewBouquet }) => {
+  categoryImages: CategoryImages;
+  }> = ({ selectedFlower, onClose, isFavorite, onAddToFavorite, onAddToBouquet, onAddToNewBouquet, categoryImages }) => {
 
+    console.log(selectedFlower?.commonNamesTranslated)
     const [bouquetName, setBouquetName] = useState('');
     const [isBouquetsModalVisible, setIsBouquetsModalVisible] = useState(false);
 
@@ -49,15 +52,19 @@ const FlowerModal: React.FC<{
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <Text style={styles.closeButtonText} onPress={onClose}>X</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>{selectedFlower.common_name}</Text>
-            <View style={styles.imageBorder}>
-              <Image source={{ uri: selectedFlower.img }} style={styles.image} />
+            <Text style={styles.title}>
+              {(selectedFlower?.commonNamesTranslated?.swe?.[0] !== undefined
+                ? selectedFlower.commonNamesTranslated.swe[0]
+                : selectedFlower.commonNamesTranslated.eng[0])}
+            </Text>           
+              <View style={styles.imageBorder}>
+              <Image source={{ uri: selectedFlower.categoryImages.flower[0] }} style={styles.image} />
             </View>
-            <Text style={[styles.subtitle, styles.marginSubtitleTop]}>Scientific Name: <Text style={styles.textStyle}>{selectedFlower.scientific_name}</Text></Text>
-            <Text style={styles.subtitle}>Family: <Text style={styles.textStyle}>{selectedFlower.family}</Text></Text>
-            <Text style={styles.subtitle}>Author: <Text style={styles.textStyle}>{selectedFlower.author}</Text></Text>
-            <Text style={styles.subtitle}>Bibliography: <Text style={styles.textStyle}>{selectedFlower.bibliography}</Text></Text>
-            <Text style={styles.subtitle}>Year: <Text style={styles.textStyle}>{selectedFlower.year}</Text></Text>
+            <Text style={[styles.subtitle, styles.marginSubtitleTop]}>Scientific Name: <Text style={styles.textStyle}>{selectedFlower.mainSpecies.scientific_name}</Text></Text>
+            <Text style={styles.subtitle}>Family: <Text style={styles.textStyle}>{selectedFlower.mainSpecies.family}</Text></Text>
+            <Text style={styles.subtitle}>Author: <Text style={styles.textStyle}>{selectedFlower.mainSpecies.author}</Text></Text>
+            <Text style={styles.subtitle}>Bibliography: <Text style={styles.textStyle}>{selectedFlower.mainSpecies.bibliography}</Text></Text>
+            <Text style={styles.subtitle}>Year: <Text style={styles.textStyle}>{selectedFlower.mainSpecies.year}</Text></Text>
             {isFavorite && onAddToFavorite && (
               <TouchableOpacity style={styles.addToFavoritesItems} onPress={onAddToFavorite}>
                 <Text>Add to favorites</Text>
