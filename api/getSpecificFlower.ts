@@ -12,14 +12,25 @@ export const getSpecificFlowerData = async (id: number): Promise<SpecificFlowerD
     const { main_species: mainSpecies } = result.data as { main_species: MainSpecies };
     const { images, common_names } = mainSpecies;
 
+    console.log(mainSpecies)
     const imageUrlsByCategory: CategoryImages = {};
 
     // Iterate over the images object
-    for (const category in images) {
-      const categoryImages: ImageData = images[category];
-      const imageUrls = categoryImages.map(image => image.image_url);
+for (const category in images) {
+  // Check if the category name is not an empty string
+  if (category.trim() !== "") {
+    const categoryImages: ImageData = images[category];
+    // Exclude empty or null URLs
+    const imageUrls = categoryImages
+      .map(image => image.image_url)
+      .filter(url => url && url.trim() !== "");
+
+    // Only add the category to imageUrlsByCategory if it has at least one URL
+    if (imageUrls.length > 0) {
       imageUrlsByCategory[category] = imageUrls;
     }
+  }
+}
 
     const commonNamesTranslated: CommonNamesTranslated = {};
 

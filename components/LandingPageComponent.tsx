@@ -52,22 +52,35 @@ const FlowerItem: React.FC<FlowerProps> = React.memo(
       setSelectedFlower(null);
     };
 
-    const handleAddToFavorites = async () => {
-      if (!selectedFlower) return;
+const handleAddToFavorites = async () => {
+  if (!selectedFlower) return;
 
-      const dbInstance = getFirestore(app);
-      const favoritesRef = collection(dbInstance, 'favorites');
-      const flowerFavoritesDocRef = doc(favoritesRef, 'flowerFavorites');
-      const flowerFavoritesDoc = await getDoc(flowerFavoritesDocRef);
+  const dbInstance = getFirestore(app);
+  const favoritesRef = collection(dbInstance, 'favorites');
+  const flowerFavoritesDocRef = doc(favoritesRef, 'flowerFavorites');
+  const flowerFavoritesDoc = await getDoc(flowerFavoritesDocRef);
 
-      if (!flowerFavoritesDoc.exists()) {
-        await setDoc(flowerFavoritesDocRef, {});
-      }
+  if (!flowerFavoritesDoc.exists()) {
+    await setDoc(flowerFavoritesDocRef, {});
+  }
 
-      updateDoc(flowerFavoritesDocRef, {
-        [selectedFlower.mainSpecies.id]: selectedFlower,
-      });
-    };
+  // Create a new object with only the fields you want to save
+  const selectedFlowerDataToSave = {
+    id: selectedFlower.mainSpecies.id,
+    author: selectedFlower.mainSpecies.author,
+    bibliography: selectedFlower.mainSpecies.bibliography,
+    common_name: selectedFlower.mainSpecies.common_name,
+    family: selectedFlower.mainSpecies.family,
+    img: selectedFlower.mainSpecies.image_url,
+    scientific_name: selectedFlower.mainSpecies.scientific_name,
+    year: selectedFlower.mainSpecies.year,
+  };
+
+  // Save the new object to Firestore
+  updateDoc(flowerFavoritesDocRef, {
+    [selectedFlower.mainSpecies.id]: selectedFlowerDataToSave,
+  });
+};
 
     return (
       <>

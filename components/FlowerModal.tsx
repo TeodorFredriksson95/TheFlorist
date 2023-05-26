@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image, Animated } from 'react-native';
 import { FetchFlowers, SpecificFlowerData } from '../types/Flowers';
 import { styles } from '../css/modalStyles';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -19,7 +19,30 @@ const FlowerModal: React.FC<{
   categoryImages: CategoryImages;
   }> = ({ selectedFlower, onClose, isFavorite, onAddToFavorite, onAddToBouquet, onAddToNewBouquet, categoryImages }) => {
 
-    console.log(selectedFlower?.commonNamesTranslated)
+  const slideAnim = useRef(new Animated.Value(-1000)).current;  // Slide out of screen at start
+
+  useEffect(() => {
+    if (selectedFlower !== null) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [selectedFlower]);
+
+  const handleSlideOut = () => {
+    Animated.timing(slideAnim, {
+      toValue: -1000,
+      duration: 500,
+      useNativeDriver: false,
+    }).start(() => {
+      // Reset the position for the next mount
+      slideAnim.setValue(-1000);
+      onClose(); // Start the closing action after the animation
+    });
+  };
+
     const [bouquetName, setBouquetName] = useState('');
     const [isBouquetsModalVisible, setIsBouquetsModalVisible] = useState(false);
 
@@ -40,17 +63,23 @@ const FlowerModal: React.FC<{
       }
     }
 
-  if (!selectedFlower) {
-    return null;
-  }
+
+if (!selectedFlower || !selectedFlower.commonNamesTranslated) {
+    return null; 
+}
 
   return (
     <Modal visible={Boolean(selectedFlower)} transparent={true}>
       <View style={styles.container}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modal}>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText} onPress={onClose}>X</Text>
+       <TouchableWithoutFeedback>
+          <Animated.View 
+            style={[
+              styles.modal,
+              { transform: [{ translateX: slideAnim }] },
+            ]}  
+          >
+            <TouchableOpacity style={styles.closeButton} onPress={handleSlideOut}>
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
             <Text style={styles.title}>
               {(selectedFlower?.commonNamesTranslated?.swe?.[0] !== undefined
@@ -97,7 +126,7 @@ const FlowerModal: React.FC<{
 
       </>
     )}
-          </View>
+         </Animated.View>
         </TouchableWithoutFeedback>
       </View>
     </Modal>
